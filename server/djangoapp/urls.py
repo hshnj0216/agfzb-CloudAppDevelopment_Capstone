@@ -8,15 +8,9 @@ urlpatterns = [
     # route is a string contains a URL pattern
     # view refers to the view function
     # name the URL
-    path('/', views.home, name='home'),
     path('home/', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
-
-    # path for about view
-
-    # path for contact us view
-
     # path for registration
 
     # path for login
