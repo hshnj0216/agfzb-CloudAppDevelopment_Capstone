@@ -8,7 +8,7 @@ urlpatterns = [
     # route is a string contains a URL pattern
     # view refers to the view function
     # name the URL
-
+    path('home/', views.home, name='home'),
     # path for about view
 
     # path for contact us view
