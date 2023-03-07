@@ -36,6 +36,24 @@
                 </a>
             </li>
         </ul>
+        <ul class='nav navbar-right navbar-nav'>
+            {% if user.is_authenticated %}
+            <li>
+                <a class="btn btn-link" href="#">{{ user.username }}</a>
+                <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+           </li>
+           {% else %}
+           <li>
+                <form class='form-inline' action="{% url 'djangoapp:login' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="form-control mr-3" placeholder="Username" name="username" >
+                    <input type="password" class="form-control mr-3" placeholder="Password" name="password" >
+                    <button class="btn btn-primary mr-3" type="submit">Login</button>
+                    <a class="btn btn-link mr-3" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                </form>
+           </li>
+           {% endif %}
+        </ul>
     </nav>
     {% block content %}
     {% endblock %}
