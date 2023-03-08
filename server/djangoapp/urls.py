@@ -12,7 +12,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
     # path for registration
-
+    path('register/', views.registration_request, name='register'),
     # path for login
     path('login/', views.login_request, name='login'),
     # path for logout
