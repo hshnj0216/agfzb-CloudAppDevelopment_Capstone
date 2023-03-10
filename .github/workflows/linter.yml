@@ -6,11 +6,11 @@ on:
   pull_request:
     branches: [master, main]
 
-jobs: # list of things to do
+jobs:
   lint_function_js:
     name: Linting JavaScript Function 
     runs-on: ubuntu-latest 
-    steps: # list of steps
+    steps:
       - name: Install NodeJS
         uses: actions/setup-node@v3
         with:
@@ -21,11 +21,11 @@ jobs: # list of things to do
 
       - name: Install Dependencies
         run: npm install
-        working-directory: functions/sample/nodejs
+        working-directory: ./functions/sample/nodejs
 
       - name: Code Linting
         run: npm run lint
-        working-directory: functions/sample/nodejs
+        working-directory: ./functions/sample/nodejs
     
 
   lint_function_python:
@@ -43,8 +43,8 @@ jobs: # list of things to do
           pip install pylint
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with Pylint
-        run: pylint *.py
-        working-directory: functions/sample/python
+        run: pylint ./*.py
+        working-directory: ./functions/sample/python
 
   lint_django_server:
     name: Linting Django Server 
@@ -61,5 +61,5 @@ jobs: # list of things to do
           pip install pylint
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with Pylint
-        run: pylint *.py
-        working-directory: server
+        run: pylint ./*.py
+        working-directory: ./server
