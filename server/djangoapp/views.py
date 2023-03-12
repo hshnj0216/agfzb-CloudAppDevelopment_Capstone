@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 # from .restapis import related methods
+from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -38,7 +39,7 @@ def login_request(request):
         #If user is valid, call the login method and pass the user
         if user is not None:
             login(request, user)
-            return redirect(request, 'djangoapp/home.html')
+            return redirect(reverse('djangoapp:home'))
         #If not, return to the login page
         else:
             return render(request, 'djangoapp/home.html', context)
@@ -47,7 +48,7 @@ def login_request(request):
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
     logout(request)
-    return redirect(request, 'djangoapp/home.html')
+    return redirect(reverse('djangoapp:home'))
 
 # Create a `registration_request` view to handle sign up request
 def registration_request(request):
@@ -76,7 +77,7 @@ def registration_request(request):
                                             password=password)
             #Login the user and redirect to home page
             login(request, user)
-            return redirect('djangoapp/home.html')
+            return redirect(reverse('djangoapp:home'))
         else:
             return render(request, 'djangoapp/registration.html', context)
 # Update the `get_dealerships` view to render the index page with a list of dealerships
