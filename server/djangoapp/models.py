@@ -11,13 +11,11 @@ from django.utils.timezone import now
 # - __str__ method to print a car make object
 class CarMake(models.Model):
     name = models.CharField(max_length=100)
-    update models and admin
     description = models.CharField(max_length=500)
     country_of_origin = models.CharField(max_length=50)
 
     def __str__(self):
         return f"{self.name} ({self.country_of_origin}) - {self.description}"
-        update models and admin
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
 # - Many-To-One relationship to Car Make model (One Car Make has many Car Models, using ForeignKey field)
