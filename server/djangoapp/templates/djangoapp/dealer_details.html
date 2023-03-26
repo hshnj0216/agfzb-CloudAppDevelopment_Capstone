@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dealership Review</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
+{% extends 'base.html' %}
+{% block title %}Dealer Details{% endblock %}
+{% block content %}
+    <h3>{{ dealer.name }}</h3>
+    <div class="jumbotron">
 
-    <body>
-
-    <!--Add a nav bar here -->
-
-    <!-- Add reviews as cards -->
-
-    </body>
-
-</html>
+    </div>
+{% endblock %}
