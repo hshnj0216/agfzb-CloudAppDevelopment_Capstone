@@ -61,6 +61,7 @@ def get_dealers_from_cf(url, **kwargs):
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 def get_dealer_reviews_from_cf(url, dealerId):
+    api_key = "ZIYL7FkxhVIh7CDvitjeaB7cVBK5D4BRr3Yjsoj76MZl"
     reviews = []
     json_result = get_request(url, dealerId=dealerId)
     if json_result:
@@ -75,12 +76,24 @@ def get_dealer_by_id_from_cf(url, id):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
     json_result = get_request(url, id=id)
-    print(json_result)
-    dealer = CarDealer(address=json_result["address"], city=json_result["city"], full_name=json_result["full_name"],
-                       id=json_result["id"], lat=json_result["lat"], long=json_result["long"],
-                       short_name=json_result["short_name"], st=json_result["st"], zip=json_result["zip"])
-    return json_result
-
+    print("json_result:", json_result)
+    if json_result:
+        dealer = CarDealer(
+            address=json_result.get("address"),
+            city=json_result.get("city"),
+            full_name=json_result.get("full_name"),
+            id=json_result.get("id"),
+            lat=json_result.get("lat"),
+            long=json_result.get("long"),
+            short_name=json_result.get("short_name"),
+            st=json_result.get("st"),
+            state=json_result.get("state"),
+            zip=json_result.get("zip")
+        )
+        print(dealer)
+        return dealer
+    else:
+        return redirect(reverse('djangoapp:not_found'))
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments

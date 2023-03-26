@@ -1,8 +1,40 @@
 {% extends 'base.html' %}
 {% block title %}Dealer Details{% endblock %}
 {% block content %}
-    <h3>{{ dealer.name }}</h3>
-    <div class="jumbotron">
-
+    <div class="p-5">
+        <h3>{{dealer.full_name}}</h3>
+        <h6>{{dealer.address}}, {{dealer.city}}, {{dealer.state}}</h6>
+        <div class="jumbotron">
+            <h4>Reviews</h4>
+            {% if reviews %}
+                <div class="d-flex">
+                    {% for review in reviews %}
+                        <div class="card">
+                            <div class="card-header">
+                                Review
+                            </div>
+                            <div class="card-body">
+                                <blockquote class="blockquote mb-0">
+                                    <p>{{review.review}}</p>
+                                    <footer class="blockquote-footer">{{review.name}}</footer>
+                                    {% if review.purchase %}
+                                        <hr>
+                                        <p>Purchased Car Details:</p>
+                                        <ul>
+                                            <li>Make: {{review.car_make}}</li>
+                                            <li>Model: {{review.car_model}}</li>
+                                            <li>Year: {{review.car_year}}</li>
+                                            <li>Purchase Date: {{review.purchase_date}}</li>
+                                        </ul>
+                                    {% endif %}
+                                </blockquote>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No reviews found.</p>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

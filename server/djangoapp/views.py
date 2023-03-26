@@ -101,14 +101,22 @@ def get_dealer_details(request, dealer_id):
 # ...
     context = {}
     if request.method == "GET":
-        get_dealer_url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_dealership_by_id"
+        get_dealer_url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_dealership"
         get_review_url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_review"
         dealer = get_dealer_by_id_from_cf(get_dealer_url, id=dealer_id)
+        print(dealer)
         reviews =  get_dealer_reviews_from_cf(get_review_url, dealerId=dealer_id)
         context['dealer'] = dealer
-        content['reviews'] = reviews
+        context['reviews'] = reviews
         return render(request, 'djangoapp/dealer_details.html', context)
+    else:
+        return redirect(reverse('djangoapp:not_found'))
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
+
+
+def not_found(request):
+    return render(request, 'djangoapp/not_found.html')
+
 
