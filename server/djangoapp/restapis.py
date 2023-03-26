@@ -13,7 +13,16 @@ def get_request(url, **kwargs):
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+        if api_key:
+            params = dict()
+            params["text"] = kwargs["text"]
+            params["version"] = kwargs["version"]
+            params["features"] = kwargs["features"]
+            params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                    params=params, auth=HTTPBasicAuth('apiKey', api_key))
+        else:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -25,11 +34,11 @@ def get_request(url, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
-def post_request(url,payload, **kwargs):
+def post_request(url, payload, **kwargs):
     print(kwargs)
     try:
         response = requests.post(url, headers={'Content-Type': 'application/json'}, 
-                            params=kwargs, json=json.dumps(payload))
+                                 params=kwargs, json=payload)
         response.raise_for_status()
         return response.json()
     except request.exceptions.RequestException as e: 
@@ -61,7 +70,6 @@ def get_dealers_from_cf(url, **kwargs):
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 def get_dealer_reviews_from_cf(url, dealerId):
-    api_key = "ZIYL7FkxhVIh7CDvitjeaB7cVBK5D4BRr3Yjsoj76MZl"
     reviews = []
     json_result = get_request(url, dealerId=dealerId)
     if json_result:
@@ -95,8 +103,11 @@ def get_dealer_by_id_from_cf(url, id):
     else:
         return redirect(reverse('djangoapp:not_found'))
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
+analyze_review_sentiments(dealer_review):
+    api_key = "ZIYL7FkxhVIh7CDvitjeaB7cVBK5D4BRr3Yjsoj76MZl" 
+    url = "https://api.jp-tok.natural-language-understanding.watson.cloud.ibm.com/instances/28389b6d-9bbc-49b5-b1d3-82f39dcdf997"
 # - Call get_request() with specified arguments
+    response = get_request(url, api_key=api_key)
 # - Get the returned sentiment label such as Positive or Negative
 
 

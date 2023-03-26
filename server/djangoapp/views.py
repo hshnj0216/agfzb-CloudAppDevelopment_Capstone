@@ -112,9 +112,9 @@ def get_dealer_details(request, dealer_id):
     else:
         return redirect(reverse('djangoapp:not_found'))
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
-
+def add_review(request, dealer_id):
+    url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/post_review"
+    response = post_request(url, )
 
 def not_found(request):
     return render(request, 'djangoapp/not_found.html')
