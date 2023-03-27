@@ -3,7 +3,7 @@
 {% block content %}
     <div class="jumbotron">
         <h2>Add a review</h2>
-        <form id="review-form" method="post" action="{% url 'djangoapp:add_review' %}">
+        <form id="review-form" method="post" action="{% url 'djangoapp:add_review' dealer_id=dealer_id %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="purchase">Have you purchased a car from this dealership?</label>

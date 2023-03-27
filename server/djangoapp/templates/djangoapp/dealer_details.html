@@ -4,6 +4,8 @@
     <div class="p-5">
         <h3>{{dealer.full_name}}</h3>
         <h6>{{dealer.address}}, {{dealer.city}}, {{dealer.state}}</h6>
+        {{dealer}}
+        {{dealer.id}}
         <div class="jumbotron">
             <h4>Reviews</h4>
             {% if reviews %}
@@ -32,14 +34,16 @@
                         </div>
                     {% endfor %}
                 </div>
-                {% if user.is_authenticated %}
-                    <button class="btn btn-primary">
-                        <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}">Add Review</a>
-                    </button>
-                {% endif %}
             {% else %}
                 <p>No reviews found.</p>
             {% endif %}
         </div>
+        {% if user.is_authenticated %}
+            <button class="btn btn-primary text-light">
+                <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}">Add Review</a>
+            </button>
+        {% else %}
+            <h3>User is not authenticated.</h3>
+        {% endif %}
     </div>
 {% endblock %}

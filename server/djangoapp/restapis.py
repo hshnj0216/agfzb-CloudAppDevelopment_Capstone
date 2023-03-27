@@ -13,26 +13,27 @@ from ibm_watson.natural_language_understanding_v1 import SentimentOptions, Featu
 def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
-    response = None
     try:
-        # Call get method of requests library with URL and parameters
+        api_key = kwargs.get("api_key")
         if api_key:
             params = dict()
             params["text"] = kwargs["text"]
             params["version"] = kwargs["version"]
             params["features"] = kwargs["features"]
             params["return_analyzed_text"] = kwargs["return_analyzed_text"]
-            response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=params, auth=HTTPBasicAuth('apiKey', api_key))
-            json_data = json.loads(response.text)
-        else:
+            response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+                                    auth=HTTPBasicAuth('apikey', api_key))
+        # Call get method of requests library with URL and parameters
+        else:    
             response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
-            json_data = json.loads(response)
+        status_code = response.status_code
+        print("With status {} ".format(status_code))
+        json_data = json.loads(response.text)
+        return json_data
     except:
         # If any error occurs
-        print("Network exception occurred")
-    return json_data
+        print("Network exception occurred")   
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
@@ -40,7 +41,7 @@ def post_request(url, json_payload, **kwargs):
     print(kwargs)
     try:
         response = requests.post(url, headers={'Content-Type': 'application/json'}, 
-                                 params=kwargs, json=payload)
+                                 params=kwargs, json=json_payload)
         response.raise_for_status()
         return response.json()
     except request.exceptions.RequestException as e: 
@@ -79,6 +80,7 @@ def get_dealer_reviews_from_cf(url, dealerId):
             review_obj = DealerReview(id=review.id, name=review.name, dealership=review.dealership, purchase=review.purchase,
                                       review=review.review, purchase_date=review.purchase_date, car_make=review.car_make, 
                                       car_model=review.car_model, car_year=review.car_year)
+            review_obj.sentiment = analyze_review_sentiments(review_obj.review)                         
             review.append(review_obj)
     return reviews
             

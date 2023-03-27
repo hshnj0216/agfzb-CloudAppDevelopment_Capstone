@@ -93,7 +93,12 @@ def get_dealerships(request):
         # Concat all dealer's short name
         dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         context['dealerships'] = dealerships 
+        print(dealer_names)
         # Return a list of dealer short name
+        return render(request, 'djangoapp/index.html', context)
+    else:
+        message: "There was a problem fetching the data"
+        context['message'] = message
         return render(request, 'djangoapp/index.html', context)
 
 
@@ -117,6 +122,8 @@ def get_dealer_details(request, dealer_id):
 @login_required
 def add_review(request, dealer_id):
     url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/post_review"
+    print("from add review: " + str(dealer_id))
+    context = {}
     if request.method == "POST":
         review = {
             name: request.user.username,
@@ -132,9 +139,10 @@ def add_review(request, dealer_id):
         json_payload['review'] = review
         response = post_request(url, json_payload, dealerId=dealer_id)
         print(response)
-        return response
+        return redirect(reverse('dealer_details', kwargs={'dealer_id': dealer_id}))
     elif request.method == "GET":
-        return render(request, 'djangoapp/add_review.html')
+        context['dealer_id'] = dealer_id
+        return render(request, 'djangoapp/add_review.html', context)
 
 def not_found(request):
     return render(request, 'djangoapp/not_found.html')
