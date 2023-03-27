@@ -1,5 +1,40 @@
 {% extends 'base.html' %}
 {% block title %}Add Review{% endblock %}
 {% block content %}
-    
+    <div class="jumbotron">
+        <h2>Add a review</h2>
+        <form id="review-form" method="post" action="{% url 'djangoapp:add_review' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="purchase">Have you purchased a car from this dealership?</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="purchase" id="purchase-yes" value="yes">
+                  <label class="form-check-label" for="purchase-yes">Yes</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="purchase" id="purchase-no" value="no" checked>
+                  <label class="form-check-label" for="purchase-no">No</label>
+                </div>
+            </div>
+            
+            <div class="form-group" id="car-fields" style="display:none;">
+                <label for="car">Car Make</label>
+                <input type="text" class="form-control" name="car" id="car">
+            
+                <label for="car-model">Car Model</label>
+                <input type="text" class="form-control" name="car-model" id="car-model">
+            
+                <label for="car-year">Car Year</label>
+                <input type="text" class="form-control" name="car-year" id="car-year">
+            </div>
+
+            <div class="form-group">
+              <label for="review">Review</label>
+              <textarea class="form-control" name="review" id="review" rows="3"></textarea>
+            </div>
+          
+            <button type="submit" class="btn btn-primary">Submit</button>
+          
+        </form>
+    </div>
 {% endblock %}

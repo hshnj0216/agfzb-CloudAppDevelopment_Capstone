@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import datetime
 import logging
@@ -111,10 +112,29 @@ def get_dealer_details(request, dealer_id):
         return render(request, 'djangoapp/dealer_details.html', context)
     else:
         return redirect(reverse('djangoapp:not_found'))
+
 # Create a `add_review` view to submit a review
+@login_required
 def add_review(request, dealer_id):
     url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/post_review"
-    response = post_request(url, )
+    if request.method == "POST":
+        review = {
+            name: request.user.username,
+            time: datetime.utcnow().isoformat(),
+            dealership: dealer_id,
+            review: request.POST.review,
+            purchase: request.POST.purchase,
+            car_make: request.POST.car_make,
+            car_model: request.POST.car_model,
+            car_year: request.POST.car_year,
+        }
+        json_payload = {}
+        json_payload['review'] = review
+        response = post_request(url, json_payload, dealerId=dealer_id)
+        print(response)
+        return response
+    elif request.method == "GET":
+        return render(request, 'djangoapp/add_review.html')
 
 def not_found(request):
     return render(request, 'djangoapp/not_found.html')

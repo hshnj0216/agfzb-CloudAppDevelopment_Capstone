@@ -3,6 +3,8 @@ import json
 # import related models here
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_watson.natural_language_understanding_v1 import SentimentOptions, Features
 
 
 # Create a `get_request` to make HTTP GET requests
@@ -11,6 +13,7 @@ from requests.auth import HTTPBasicAuth
 def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
+    response = None
     try:
         # Call get method of requests library with URL and parameters
         if api_key:
@@ -21,20 +24,19 @@ def get_request(url, **kwargs):
             params["return_analyzed_text"] = kwargs["return_analyzed_text"]
             response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=params, auth=HTTPBasicAuth('apiKey', api_key))
+            json_data = json.loads(response.text)
         else:
             response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
+            json_data = json.loads(response)
     except:
         # If any error occurs
         print("Network exception occurred")
-    status_code = response.status_code
-    print("With status {} ".format(status_code))
-    json_data = json.loads(response.text)
     return json_data
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
-def post_request(url, payload, **kwargs):
+def post_request(url, json_payload, **kwargs):
     print(kwargs)
     try:
         response = requests.post(url, headers={'Content-Type': 'application/json'}, 
@@ -102,13 +104,23 @@ def get_dealer_by_id_from_cf(url, id):
         return dealer
     else:
         return redirect(reverse('djangoapp:not_found'))
+
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-analyze_review_sentiments(dealer_review):
+def analyze_review_sentiments(dealer_review):
     api_key = "ZIYL7FkxhVIh7CDvitjeaB7cVBK5D4BRr3Yjsoj76MZl" 
     url = "https://api.jp-tok.natural-language-understanding.watson.cloud.ibm.com/instances/28389b6d-9bbc-49b5-b1d3-82f39dcdf997"
+    features = {
+        'sentiment': {},
+        'emotion': {}
+    }
 # - Call get_request() with specified arguments
-    response = get_request(url, api_key=api_key)
-# - Get the returned sentiment label such as Positive or Negative
+    response = get_request(url, api_key=api_key, text=dealer_review, version='2021-03-25',
+                            features=features, return_analyzed_text=False)
+    # - Get the returned sentiment label such as Positive or Negative
+    sentiment_score = response['sentiment']['document']['score']
+    return sentiment_score
+
+
 
 
 

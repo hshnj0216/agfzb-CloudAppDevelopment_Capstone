@@ -32,6 +32,11 @@
                         </div>
                     {% endfor %}
                 </div>
+                {% if user.is_authenticated %}
+                    <button class="btn btn-primary">
+                        <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}">Add Review</a>
+                    </button>
+                {% endif %}
             {% else %}
                 <p>No reviews found.</p>
             {% endif %}
