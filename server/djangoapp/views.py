@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf, post_request
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -125,21 +125,30 @@ def add_review(request, dealer_id):
     print("from add review: " + str(dealer_id))
     context = {}
     if request.method == "POST":
-        review = {
-            name: request.user.username,
-            time: datetime.utcnow().isoformat(),
-            dealership: dealer_id,
-            review: request.POST.review,
-            purchase: request.POST.purchase,
-            car_make: request.POST.car_make,
-            car_model: request.POST.car_model,
-            car_year: request.POST.car_year,
-        }
+        if request.POST['purchase'] == "yes":
+             review = {
+                'name': request.user.username,
+                'time': datetime.utcnow().isoformat(),
+                'dealership': dealer_id,
+                'review': request.POST['review'],
+                'purchase': request.POST['purchase']
+            }
+        else: 
+            review = {
+                'name': request.user.username,
+                'time': datetime.utcnow().isoformat(),
+                'dealership': dealer_id,
+                'review': request.POST['review'],
+                'purchase': request.POST['purchase'],
+                'car_make': request.POST['car_make'],
+                'car_model': request.POST['car_model'],
+                'car_year': request.POST['car_year']
+            }
         json_payload = {}
         json_payload['review'] = review
         response = post_request(url, json_payload, dealerId=dealer_id)
         print(response)
-        return redirect(reverse('dealer_details', kwargs={'dealer_id': dealer_id}))
+        return redirect(reverse('djangoapp:dealer_details', args=[dealer_id]))
     elif request.method == "GET":
         context['dealer_id'] = dealer_id
         return render(request, 'djangoapp/add_review.html', context)

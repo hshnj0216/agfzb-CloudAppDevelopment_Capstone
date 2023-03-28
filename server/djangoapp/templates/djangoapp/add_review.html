@@ -38,3 +38,16 @@
         </form>
     </div>
 {% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            $('input[name="purchase"]').change(function() {
+                if ($(this).val() === 'yes') {
+                    $('#car-fields').show();
+                } else {
+                    $('#car-fields').hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}

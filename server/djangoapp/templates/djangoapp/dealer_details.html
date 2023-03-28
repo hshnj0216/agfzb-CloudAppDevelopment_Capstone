@@ -40,7 +40,7 @@
         </div>
         {% if user.is_authenticated %}
             <button class="btn btn-primary text-light">
-                <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}">Add Review</a>
+                <a class="text-light" href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}">Add Review</a>
             </button>
         {% else %}
             <h3>User is not authenticated.</h3>

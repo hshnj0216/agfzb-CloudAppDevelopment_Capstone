@@ -44,7 +44,7 @@ def post_request(url, json_payload, **kwargs):
                                  params=kwargs, json=json_payload)
         response.raise_for_status()
         return response.json()
-    except request.exceptions.RequestException as e: 
+    except requests.exceptions.RequestException as e: 
         print("An error occured", e)
         
 
