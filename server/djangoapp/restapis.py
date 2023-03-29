@@ -77,11 +77,11 @@ def get_dealer_reviews_from_cf(url, dealerId):
     json_result = get_request(url, dealerId=dealerId)
     if json_result:
         for review in json_result:
-            review_obj = DealerReview(id=review.id, name=review.name, dealership=review.dealership, purchase=review.purchase,
-                                      review=review.review, purchase_date=review.purchase_date, car_make=review.car_make, 
-                                      car_model=review.car_model, car_year=review.car_year)
+            review_obj = DealerReview(id=review['id'], name=review['name'], dealership=review['dealership'], purchase=review['purchase'],
+                                      review=review['review'], purchase_date=review['purchase_date'], car_make=review['car_make'], 
+                                      car_model=review['car_model'], car_year=review['car_year'])
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)                         
-            review.append(review_obj)
+            reviews.append(review_obj)
     return reviews
             
 def get_dealer_by_id_from_cf(url, id):
@@ -119,8 +119,11 @@ def analyze_review_sentiments(dealer_review):
     response = get_request(url, api_key=api_key, text=dealer_review, version='2021-03-25',
                             features=features, return_analyzed_text=False)
     # - Get the returned sentiment label such as Positive or Negative
-    sentiment_score = response['sentiment']['document']['score']
-    return sentiment_score
+    if 'sentiment' in response and 'document' in response['sentiment'] and 'score' in response['sentiment']['document']:
+        sentiment_score = response['sentiment']['document']['score']
+        return sentiment_score
+    else:
+        return 0.0  # default value when sentiment is not found
 
 
 
