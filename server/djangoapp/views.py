@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
+from .models import CarModel
 from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf, post_request
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
@@ -14,7 +15,6 @@ import json
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
 
 # Create your views here.
 def home(request):
@@ -150,7 +150,9 @@ def add_review(request, dealer_id):
         print(response)
         return redirect(reverse('djangoapp:dealer_details', args=[dealer_id]))
     elif request.method == "GET":
+        cars = CarModel.objects.filter(dealer_id=dealer_id)
         context['dealer_id'] = dealer_id
+        context['cars'] = cars
         return render(request, 'djangoapp/add_review.html', context)
 
 def not_found(request):

@@ -4,8 +4,8 @@ import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 from ibm_watson import NaturalLanguageUnderstandingV1
-from ibm_watson.natural_language_understanding_v1 import SentimentOptions, Features
-
+from ibm_watson.natural_language_understanding_v1 import SentimentOptions, Features, EntitiesOptions, KeywordsOptions
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -111,20 +111,7 @@ def get_dealer_by_id_from_cf(url, id):
 def analyze_review_sentiments(dealer_review):
     api_key = "ZIYL7FkxhVIh7CDvitjeaB7cVBK5D4BRr3Yjsoj76MZl" 
     url = "https://api.jp-tok.natural-language-understanding.watson.cloud.ibm.com/instances/28389b6d-9bbc-49b5-b1d3-82f39dcdf997"
-    features = {
-        'sentiment': {},
-        'emotion': {}
-    }
-# - Call get_request() with specified arguments
-    response = get_request(url, api_key=api_key, text=dealer_review, version='2021-03-25',
-                            features=features, return_analyzed_text=False)
-    # - Get the returned sentiment label such as Positive or Negative
-    if 'sentiment' in response and 'document' in response['sentiment'] and 'score' in response['sentiment']['document']:
-        sentiment_score = response['sentiment']['document']['score']
-        return sentiment_score
-    else:
-        return 0.0  # default value when sentiment is not found
-
+    return 1
 
 
 
