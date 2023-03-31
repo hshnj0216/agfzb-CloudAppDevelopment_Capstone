@@ -38,9 +38,10 @@ def get_request(url, **kwargs):
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 def post_request(url, json_payload, **kwargs):
     print(kwargs)
+    print(f"json_payload: {json_payload}")
     try:
         response = requests.post(url, headers={'Content-Type': 'application/json'}, 
-                                 params=kwargs, json=json_payload)
+                                json=json_payload['review'])
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e: 
@@ -87,7 +88,6 @@ def get_dealer_by_id_from_cf(url, id):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
     json_result = get_request(url, id=id)
-    print("json_result:", json_result)
     if json_result:
         dealer = CarDealer(
             address=json_result.get("address"),
@@ -101,7 +101,6 @@ def get_dealer_by_id_from_cf(url, id):
             state=json_result.get("state"),
             zip=json_result.get("zip")
         )
-        print(dealer)
         return dealer
     else:
         return redirect(reverse('djangoapp:not_found'))
@@ -123,7 +122,6 @@ def analyze_review_sentiments(dealer_review):
         entities=EntitiesOptions(emotion=True, sentiment=True, limit=2)
     ),
     language='en').get_result()
-    print(json.dumps(response, indent=2))
     return response['sentiment']['document']['label']
 
 

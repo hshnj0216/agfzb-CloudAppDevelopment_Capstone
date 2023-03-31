@@ -7,27 +7,29 @@
         <div class="jumbotron">
             <h4>Reviews</h4>
             {% if reviews %}
-                <div class="d-flex">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
                     {% for review in reviews %}
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-start">
-                                {% if review.sentiment == 'positive' %}
-                                    <img src="{{ MEDIA_URL }}/emoji/positive.png" style="width: 25px; height:25px"/>
-                                {% elif review.sentiment == 'neutral' %}
-                                    <img src="{{ MEDIA_URL }}/emoji/neutral.png" style="width: 25px; height:25px"/>
-                                {% else %}
-                                    <img src="{{ MEDIA_URL }}/emoji/negative.png" style="width: 25px; height:25px"/>
-                                {% endif %}
-                            </div>
-                            <div class="card-body">
-                                {% if review.purchase %}
-                                        <h5>{{review.car_make}}, {{review.car_model}}</h5>
-                                        <h5>{{review.car_year}}</h5>
-                                {% endif %}
-                                <blockquote class="blockquote mb-0">
-                                    <p>"{{review.review}}"</p>
-                                    <footer class="blockquote-footer">{{review.name}}</footer>
-                                </blockquote>
+                        <div class="col mb-3">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-start">
+                                    {% if review.sentiment == 'positive' %}
+                                        <img src="{{ MEDIA_URL }}/emoji/positive.png" style="width: 25px; height:25px"/>
+                                    {% elif review.sentiment == 'neutral' %}
+                                        <img src="{{ MEDIA_URL }}/emoji/neutral.png" style="width: 25px; height:25px"/>
+                                    {% else %}
+                                        <img src="{{ MEDIA_URL }}/emoji/negative.png" style="width: 25px; height:25px"/>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    {% if review.purchase %}
+                                            <h5>{{review.car_make}}, {{review.car_model}}</h5>
+                                            <h5>{{review.car_year}}</h5>
+                                    {% endif %}
+                                    <blockquote class="blockquote mb-0">
+                                        <p class="card-text">{{review.review}}</p>
+                                        <footer class="blockquote-footer">{{review.name}}</footer>
+                                    </blockquote>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -42,4 +44,18 @@
             </button>
         {% endif %}
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+        // Find the height of the largest card body
+        var maxHeight = 0;
+        var cardBodies = document.querySelectorAll('.card-body');
+        cardBodies.forEach(function(cardBody) {
+            maxHeight = Math.max(maxHeight, cardBody.offsetHeight);
+        });
+        // Set the height of all card bodies to the largest height
+        cardBodies.forEach(function(cardBody) {
+            cardBody.style.height = maxHeight + 'px';
+        });
+    </script>
 {% endblock %}

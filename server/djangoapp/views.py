@@ -17,8 +17,6 @@ import json
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-def home(request):
-    return render(request, 'djangoapp/home.html')
 
 # Create an `about` view to render a static about page
 def about(request):
@@ -43,14 +41,14 @@ def login_request(request):
             return redirect(reverse('djangoapp:home'))
         #If not, return to the login page
         else:
-            return render(request, 'djangoapp/home.html', context)
+            return render(request, 'djangoapp/index.html', context)
     else:
-        return render(request, 'djangoapp/home.html', context)
+        return render(request, 'djangoapp/index.html', context)
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
     logout(request)
-    return redirect(reverse('djangoapp:home'))
+    return redirect(reverse('djangoapp:index'))
 
 # Create a `registration_request` view to handle sign up request
 def registration_request(request):
@@ -79,7 +77,7 @@ def registration_request(request):
                                             password=password)
             #Login the user and redirect to home page
             login(request, user)
-            return redirect(reverse('djangoapp:home'))
+            return redirect(reverse('djangoapp:index'))
         else:
             return render(request, 'djangoapp/registration.html', context)
 
@@ -119,28 +117,32 @@ def get_dealer_details(request, dealer_id):
 @login_required
 def add_review(request, dealer_id):
     url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/post_review"
-    print("from add review: " + str(dealer_id))
     context = {}
-    if request.method == "POST":           
+    if request.method == "POST":
+        print(f"car from form: {request.POST['car']}")
+        car_model, car_make, car_year = request.POST['car'].split("-")           
         review = {
             'name': request.user.username,
             'dealership': dealer_id,
             'review': request.POST['review'],
             'purchase': request.POST['purchase'],
             'purchase_date': request.POST['purchase_date'],
-            'car_make': request.POST['car_make'],
-            'car_model': request.POST['car_model'],
-            'car_year': request.POST['car_year']
+            'car_make': car_make,
+            'car_model': car_model,
+            'car_year': car_year
         }
         json_payload = {}
         json_payload['review'] = review
-        response = post_request(url, json_payload, dealerId=dealer_id)
+        response = post_request(url, json_payload)
         print(response)
         return redirect(reverse('djangoapp:dealer_details', args=[dealer_id]))
     elif request.method == "GET":
+        get_dealer_url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_dealership"
         cars = CarModel.objects.filter(dealer_id=dealer_id)
+        dealer = get_dealer_by_id_from_cf(get_dealer_url, id=dealer_id)
         context['dealer_id'] = dealer_id
         context['cars'] = cars
+        context['dealer'] = dealer
         return render(request, 'djangoapp/add_review.html', context)
 
 def not_found(request):

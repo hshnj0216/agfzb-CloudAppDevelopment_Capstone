@@ -2,7 +2,6 @@
 {% block title %}Dealership{% endblock %}
 {% block content %}
     <!--Add a dealer table here -->
-    <h1 class="ml-5">Dealers List</h1>
     <table class="table table-striped table-bordered my-3 mx-auto w-75"
            data-filter-control="true"
            id="table"
@@ -14,7 +13,7 @@
                 <th>City</th>
                 <th>Address</th>
                 <th>Zip</th>
-                <th data-field="state" data-filter-control="select">State</th>
+                <th data-field="state" data-filter-control="select" data-filter-control-attr="data-align='right'">State</th>
             </tr>
         </thead>
         {% if dealerships %}
