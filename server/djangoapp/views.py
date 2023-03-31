@@ -90,11 +90,7 @@ def get_dealerships(request):
         url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
-        # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         context['dealerships'] = dealerships 
-        print(dealer_names)
-        # Return a list of dealer short name
         return render(request, 'djangoapp/index.html', context)
     else:
         message: "There was a problem fetching the data"
@@ -109,8 +105,9 @@ def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         get_dealer_url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_dealership"
         get_review_url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/get_review"
+        #get dealers
         dealer = get_dealer_by_id_from_cf(get_dealer_url, id=dealer_id)
-        print(dealer)
+        #get reviews
         reviews =  get_dealer_reviews_from_cf(get_review_url, dealerId=dealer_id)
         context['dealer'] = dealer
         context['reviews'] = reviews
@@ -124,26 +121,17 @@ def add_review(request, dealer_id):
     url = "https://jp-tok.functions.appdomain.cloud/api/v1/web/3c735b53-57df-4e94-b2ca-02d700b31481/dealership-package/post_review"
     print("from add review: " + str(dealer_id))
     context = {}
-    if request.method == "POST":
-        if request.POST['purchase'] == "yes":
-             review = {
-                'name': request.user.username,
-                'time': datetime.utcnow().isoformat(),
-                'dealership': dealer_id,
-                'review': request.POST['review'],
-                'purchase': request.POST['purchase']
-            }
-        else: 
-            review = {
-                'name': request.user.username,
-                'time': datetime.utcnow().isoformat(),
-                'dealership': dealer_id,
-                'review': request.POST['review'],
-                'purchase': request.POST['purchase'],
-                'car_make': request.POST['car_make'],
-                'car_model': request.POST['car_model'],
-                'car_year': request.POST['car_year']
-            }
+    if request.method == "POST":           
+        review = {
+            'name': request.user.username,
+            'dealership': dealer_id,
+            'review': request.POST['review'],
+            'purchase': request.POST['purchase'],
+            'purchase_date': request.POST['purchase_date'],
+            'car_make': request.POST['car_make'],
+            'car_model': request.POST['car_model'],
+            'car_year': request.POST['car_year']
+        }
         json_payload = {}
         json_payload['review'] = review
         response = post_request(url, json_payload, dealerId=dealer_id)
